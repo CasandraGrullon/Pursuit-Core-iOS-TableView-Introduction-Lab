@@ -12,9 +12,14 @@ class ViewController: UIViewController {
 
     var taskList = Task.allTasks
     
+    
+    
+    @IBOutlet weak var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        tableView.dataSource = self
+        
     }
 
     
@@ -30,9 +35,50 @@ extension ViewController : UITableViewDataSource {
         
         let task = taskList[indexPath.row]
         
+        
         cell.textLabel?.text = task.name
-        cell.detailTextLabel?.text = task.dueDate.description
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en")
+        dateFormatter.dateFormat = "EEEE, MMM d, yyyy h:mm a zzzz"
+        let dateAsString = dateFormatter.string(from: task.dueDate)
+        cell.detailTextLabel?.text = dateAsString
+        
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        var taskNotStarted = [Task]()
+        var taskInProgress = [Task]()
+        var taskCompleted = [Task]()
+        var items = [Task]()
+
+        for task in taskList {
+            if task.status == .notStarted {
+                taskNotStarted.append(task)
+            } else if task.status == .inProgress {
+                taskInProgress.append(task)
+            } else if task.status == .completed {
+                taskCompleted.append(task)
+            }
+        }
+
+        var taskStats = [[taskNotStarted], [taskInProgress], [taskCompleted]]
+        
+        switch section {
+        case 0 :
+            items = taskNotStarted
+            return "Not Started"
+        case 1 :
+            items = taskInProgress
+            return "In Progress"
+        case 2 :
+            items = taskCompleted
+            return "Completed"
+        default :
+            return "unknown"
+        }
+    }
+
 }
