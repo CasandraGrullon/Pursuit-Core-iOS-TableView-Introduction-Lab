@@ -10,7 +10,12 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    var taskList = Task.allTasks
+    var tasklist = Task.allTasks
+    var statOfTask = [[Task]]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     
     
@@ -19,7 +24,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
+        loadData()
         
+    }
+    
+    func loadData() {
+        statOfTask = Task.getSections()
     }
 
     
@@ -27,13 +37,13 @@ class ViewController: UIViewController {
 
 extension ViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return taskList.count
+        return statOfTask[section].count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "task", for: indexPath)
         
-        let task = taskList[indexPath.row]
+        let task = statOfTask[indexPath.section][indexPath.row]
         
         
         cell.textLabel?.text = task.name
@@ -48,37 +58,15 @@ extension ViewController : UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        var taskNotStarted = [Task]()
-        var taskInProgress = [Task]()
-        var taskCompleted = [Task]()
-        var items = [Task]()
-
-        for task in taskList {
-            if task.status == .notStarted {
-                taskNotStarted.append(task)
-            } else if task.status == .inProgress {
-                taskInProgress.append(task)
-            } else if task.status == .completed {
-                taskCompleted.append(task)
-            }
-        }
-
-        var taskStats = [[taskNotStarted], [taskInProgress], [taskCompleted]]
-        
-        switch section {
-        case 0 :
-            items = taskNotStarted
-            return "Not Started"
-        case 1 :
-            items = taskInProgress
-            return "In Progress"
-        case 2 :
-            items = taskCompleted
-            return "Completed"
-        default :
-            return "unknown"
-        }
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return statOfTask.count
     }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return statOfTask[section].first
+        
+    }
+    
+    
 
 }

@@ -3,7 +3,7 @@ import Foundation
 
 
 struct Task {
-    enum Status {
+    enum Status: Int, CaseIterable {
         case notStarted
         case inProgress
         case completed
@@ -64,6 +64,26 @@ struct Task {
                  status: .completed,
                  dueDate: dateFormatter.date(from: "04-13-2020")!),
         ]
+    }
+    
+    static func getSections() -> [[Task]] {
+        
+        var sectionsArray = Array(repeating: [Task](), count: Status.allCases.count)
+        
+        for task in allTasks {
+            //sectionsArr[thing.status.rawValue].append(thing)
+            switch task.status {
+            case .notStarted :
+                sectionsArray[0].append(task)
+            case .inProgress :
+                sectionsArray[1].append(task)
+            case .completed :
+                sectionsArray[2].append(task)
+            }
+        }
+        
+        
+        return sectionsArray
     }
 
 }
