@@ -3,10 +3,10 @@ import Foundation
 
 
 struct Task {
-    enum Status: Int, CaseIterable {
-        case notStarted
-        case inProgress
-        case completed
+    enum Status: String, CaseIterable {
+        case notStarted = "Not Started"
+        case inProgress = "In progress"
+        case completed = "Completed"
     }
     
     let name: String
@@ -81,8 +81,6 @@ struct Task {
                 sectionsArray[2].append(task)
             }
         }
-        
-        
         return sectionsArray
     }
 

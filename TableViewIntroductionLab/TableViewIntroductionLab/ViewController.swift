@@ -10,7 +10,6 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    var tasklist = Task.allTasks
     var statOfTask = [[Task]]() {
         didSet {
             tableView.reloadData()
@@ -63,7 +62,12 @@ extension ViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return statOfTask[section].first
+        
+        let string = statOfTask[section].first?.status.rawValue
+        
+        
+        
+        return string
         
     }
     
